@@ -1,0 +1,71 @@
+# Build, IDE, packages and test output
+bin/
+obj/
+.vs/
+.idea/
+.vscode/
+.dotnet-cli/
+.nuget-packages/
+TestResults/
+coverage/
+*.trx
+*.coverage*
+*.user
+*.suo
+*.rsuser
+*.userosscache
+*.dll
+*.exe
+*.pdb
+# Local configuration; only reviewed examples may be committed
+appsettings.*.json
+!appsettings.*.example.json
+*.runtime.json
+*-runtime.json
+!*-runtime.example.json
+secrets.json
+.env
+.env.*
+!.env.example
+*.pubxml
+*.pubxml.user
+# Credentials, certificate exports, cookie keys and database files
+*.pfx
+*.p12
+*.pem
+*.key
+*.cer
+*.crt
+*.snk
+*.dpapi
+DataProtection-Keys/
+key-*.xml
+*.db
+*.db-shm
+*.db-wal
+*.mdf
+*.ldf
+*.bak
+# Deployment and diagnostic artifacts
+Current/
+Releases/
+Backups/
+Backup/
+Build/
+Staging/
+Temp/
+publish/
+artifacts/
+logs/
+*.log
+*.zip
+*.7z
+*.dmp
+# Postman local state and reports; collections and sanitized examples are allowed
+*.postman_environment.json
+*.postman_globals.json
+*.postman_test_run.json
+!*.example.postman_environment.json
+# OS
+Thumbs.db
+.DS_Store

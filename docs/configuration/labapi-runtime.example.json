@@ -1,0 +1,14 @@
+{
+  "AllowedHosts": "<API_HOSTNAME>",
+  "Database": {
+    "ConnectionString": "Server=<SQL_HOST>;Database=<API_DATABASE>;Integrated Security=True;Encrypt=True;TrustServerCertificate=False",
+    "CommandTimeoutSeconds": 30
+  },
+  "JwtValidation": {
+    "Issuer": "<AUTH_HTTPS_ISSUER>",
+    "Audience": "<AUTH_AUDIENCE>",
+    "SigningAlgorithm": "RS256",
+    "ClockSkewSeconds": 300,
+    "PublicKeyPath": "<ABSOLUTE_PUBLIC_KEY_PEM_PATH>"
+  }
+}
