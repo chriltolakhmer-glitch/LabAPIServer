@@ -1,5 +1,7 @@
 # LabAPIServer
 
+## Purpose
+
 ASP.NET Core (.NET 10) API for Work-items and Operational Statuses. LabAuthServer issues bearer tokens; this API validates RSA signatures, issuer, audience and lifetime, authorizes requests, and owns business data in SQL Server. LabWebAppServer is the separate Razor Pages client.
 
 ## Repository layout
@@ -46,3 +48,23 @@ SQL tests are deliberately excluded from the default command above. The existing
 Publish the validated source with `dotnet publish src/LabAPIServer.Api -c Release -o <EXTERNAL_PUBLISH_DIRECTORY>`. Keep publish output, immutable archives, checksums, IIS configuration and backups outside the repository. Configure a dedicated IIS pool, the matching .NET Hosting Bundle, HTTPS, external runtime JSON and public-key file access. Deploy compatible schema before API, then Web; retain the prior artifact/configuration for rollback. Do not apply migrations automatically at startup.
 
 API changes require Postman updates. Acceptance tests are required before release, including authentication, all roles, validation, persistence and verified fixture cleanup on the exact candidate artifact. Follow [development and release rules](docs/Development-Rules.md). Existing external Postman collections have not been imported or rerun by repository preparation.
+
+## CI and test instructions
+
+The [build workflow](.github/workflows/build.yml) restores, builds and tests on pushes and pull requests targeting `main`, using Windows and .NET SDK 10.0.400. Branch names are not changed by this setup. Repositories still on `master` will not trigger this workflow until work targets `main`.
+
+After the restore/build commands above, use this isolated local validation command:
+
+```powershell
+dotnet test LabAPIServer.slnx -c Release --no-build --no-restore --filter "FullyQualifiedName!~LocalDbIntegrationTests"
+```
+
+Clear operational test configuration/opt-in variables in the test process first, as the workflow does. See [release process and CI limitations](docs/Release-Process.md) for the exact external-dependency exclusions and required acceptance. CI does not deploy or substitute for live acceptance.
+
+## Architecture role
+
+See [Architecture](docs/Architecture.md) for Browser -> Web -> Auth/AD and API/SQL responsibilities. Auth owns authentication, verified identity and role issuance; API owns business authorization and database access; Web owns UI, server-side sessions/cookies and API clients.
+
+## API/Postman update requirement
+
+New, modified or removed API endpoints require matching Postman updates before completion. Acceptance tests are required before release, covering success, authentication, role-specific authorization, validation/errors and verified cleanup of run-owned fixtures. Web expectations must follow changed API contracts. Keep credentials and tokens out of collections and repository files. Follow [Release Process](docs/Release-Process.md) for tagging, build verification, artifact checksums and rollback readiness.

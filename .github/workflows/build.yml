@@ -1,0 +1,37 @@
+name: LabAPIServer CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and Test (Release)
+    runs-on: windows-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        with:
+          dotnet-version: '10.0.400'
+      - name: Restore
+        run: dotnet restore LabAPIServer.slnx
+      - name: Build (Release)
+        run: dotnet build LabAPIServer.slnx -c Release --no-restore
+      - name: Report acceptance boundary
+        run: |
+          Write-Output '::notice::Two LocalDbIntegrationTests are NOT RUN: they require the explicitly approved lab SQL target and seeded fixtures. Unit and isolated HTTP tests remain enabled. Live Postman acceptance is separate. See docs/Release-Process.md.'
+      - name: Test (Release)
+        run: |
+          Remove-Item Env:LABAPI_CONFIG_PATH, Env:LABAPI_RUN_SQL_TESTS, Env:LABAPI_TEST_CONNECTION_STRING -ErrorAction SilentlyContinue
+          dotnet test LabAPIServer.slnx -c Release --no-build --no-restore --filter "FullyQualifiedName!~LocalDbIntegrationTests" --logger "console;verbosity=normal"
